@@ -35,6 +35,13 @@ jobs:
         .\configure --enable-all
         nmake /f Makefile.msc sqlite3.exe
 
+    - name: Compile SQLite DLL for Windows
+      run: |
+        cd sqlite
+        echo Building DLL...
+        cl /DSQLITE_DLL /DSQLITE_API=__declspec(dllexport) /I. /c sqlite3.c
+        link /DLL /OUT:sqlite3.dll sqlite3.obj
+    
     - name: Upload Windows binaries
       uses: actions/upload-artifact@v3
       with:
