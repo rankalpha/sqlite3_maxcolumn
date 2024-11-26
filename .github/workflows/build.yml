@@ -1,0 +1,67 @@
+name: Build SQLite with Custom MAX_COLUMN
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-windows:
+    name: Build SQLite for Windows
+    runs-on: windows-latest
+    steps:
+    - name: Checkout SQLite source code
+      uses: actions/checkout@v3
+      with:
+        repository: 'sqlite/sqlite'
+        path: 'sqlite'
+        
+    - name: Modify SQLITE_MAX_COLUMN
+      run: |
+        $content = (Get-Content -Path "sqlite/src/sqliteLimit.h") -replace "#define SQLITE_MAX_COLUMN 2000", "#define SQLITE_MAX_COLUMN 32676"
+        Set-Content -Path "sqlite/src/sqliteLimit.h" -Value $content
+
+    - name: Compile SQLite for Windows
+      run: |
+        cd sqlite
+        nmake /f Makefile.msc
+
+    - name: Upload Windows binaries
+      uses: actions/upload-artifact@v3
+      with:
+        name: sqlite-windows
+        path: sqlite/src/*.exe
+
+  build-linux:
+    name: Build SQLite for Linux
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout SQLite source code
+      uses: actions/checkout@v3
+      with:
+        repository: 'sqlite/sqlite'
+        path: 'sqlite'
+        
+    - name: Modify SQLITE_MAX_COLUMN
+      run: |
+        sed -i 's/#define SQLITE_MAX_COLUMN 2000/#define SQLITE_MAX_COLUMN 32676/' sqlite/src/sqliteLimit.h
+
+    - name: Install necessary tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc make tcl-dev
+
+    - name: Compile SQLite for Linux
+      run: |
+        cd sqlite
+        ./configure
+        make sqlite3
+
+    - name: Upload Linux binaries
+      uses: actions/upload-artifact@v3
+      with:
+        name: sqlite-linux
+        path: sqlite/src/sqlite3
