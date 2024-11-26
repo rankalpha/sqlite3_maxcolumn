@@ -32,14 +32,16 @@ jobs:
     - name: Compile SQLite for Windows
       run: |
         cd sqlite
-        .\configure
-        nmake /f Makefile.msc
+        .\configure --enable-all
+        nmake /f Makefile.msc sqlite3.exe
 
     - name: Upload Windows binaries
       uses: actions/upload-artifact@v3
       with:
         name: sqlite-windows
-        path: sqlite/src/*.exe
+        path: |
+          sqlite/src/*.exe
+          sqlite/src/*.dll
 
   build-linux:
     name: Build SQLite for Linux
@@ -63,7 +65,7 @@ jobs:
     - name: Compile SQLite for Linux
       run: |
         cd sqlite
-        ./configure
+        ./configure --enable-all
         make sqlite3
 
     - name: Upload Linux binaries
