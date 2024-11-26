@@ -33,9 +33,9 @@ jobs:
       run: |
         cd sqlite
         .\configure --enable-all
-        set CFLAGS="-DSQLITE_MAX_COLUMN=32676" 
-        nmake /f Makefile.msc sqlite3.dll
-   
+        nmake /f Makefile.msc sqlite3.dll CPPFLAGS="/DSQLITE_MAX_COLUMN=32676"
+        nmake /f Makefile.msc sqlite3.exe CPPFLAGS="/DSQLITE_MAX_COLUMN=32676"
+
     - name: Upload Windows binaries
       uses: actions/upload-artifact@v3
       with:
