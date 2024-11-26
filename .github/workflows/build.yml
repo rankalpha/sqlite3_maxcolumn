@@ -28,9 +28,9 @@ jobs:
     - name: Install Visual Studio Build Tools
       run: |
         # Install Visual Studio Build Tools with C++ and Windows SDK
-        choco install -y visualstudio2019-build-tools --package-parameters "--allWorkloads --includeRecommended --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
+        choco install visualstudio2022buildtools --package-parameters "--allWorkloads --includeRecommended --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
         # Add msbuild to PATH
-        echo "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding Unicode -Append
+        echo "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding Unicode -Append
 
     - name: Compile SQLite for Windows
       run: |
