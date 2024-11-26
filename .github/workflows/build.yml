@@ -40,8 +40,8 @@ jobs:
       with:
         name: sqlite-windows
         path: |
-          sqlite/src/*.exe
-          sqlite/src/*.dll
+          sqlite/*.exe
+          sqlite/*.dll
 
   build-linux:
     name: Build SQLite for Linux
