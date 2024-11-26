@@ -33,15 +33,9 @@ jobs:
       run: |
         cd sqlite
         .\configure --enable-all
-        nmake /f Makefile.msc sqlite3.exe
-
-    - name: Compile SQLite DLL for Windows
-      run: |
-        cd sqlite
-        echo Building DLL...
-        cl /DSQLITE_DLL /DSQLITE_API=__declspec(dllexport) /I. /c sqlite3.c
-        link /DLL /OUT:sqlite3.dll sqlite3.obj
-    
+        set CFLAGS="-DSQLITE_MAX_COLUMN=32676" 
+        nmake /f Makefile.msc sqlite3.dll
+   
     - name: Upload Windows binaries
       uses: actions/upload-artifact@v3
       with:
@@ -73,7 +67,7 @@ jobs:
       run: |
         cd sqlite
         ./configure --enable-all
-        make sqlite3
+        CFLAGS="-DSQLITE_MAX_COLUMN=32676" make sqlite3
 
     - name: Upload Linux binaries
       uses: actions/upload-artifact@v3
