@@ -25,27 +25,15 @@ jobs:
         Set-Content -Path "sqlite/src/sqliteLimit.h" -Value $content
 
     - name: Setup MSVC Environment
-      run: |
-        echo "Setting up MSVC environment..."
-        # 根据 Visual Studio 的安装版本和类型，路径可能有所不同
-        # 这里使用一个通用的路径，实际使用时可能需要根据具体情况调整
-        $vsDevCmdPath = "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat"
-        if (Test-Path $vsDevCmdPath) {
-            echo "Using Visual Studio 2022 Community Edition"
-        } else {
-            $vsDevCmdPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat"
-            if (Test-Path $vsDevCmdPath) {
-                echo "Using Visual Studio 2019 Community Edition"
-            } else {
-                $vsDevCmdPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\Tools\VsDevCmd.bat"
-                echo "Using Visual Studio 2019 Professional Edition"
-            }
-        }
-        cmd /c "$vsDevCmdPath && set"
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: amd64
 
     - name: Compile SQLite for Windows
       run: |
-        cmd /c "$env:VSCMD_ARG_HOST_ARCH=x64 & $vsDevCmdPath && nmake /f Makefile.msc"
+        cd sqlite
+        .\configure
+        nmake /f Makefile.msc
 
     - name: Upload Windows binaries
       uses: actions/upload-artifact@v3
